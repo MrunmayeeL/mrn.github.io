@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mrunmayee Limaye — Portfolio</title>
+  <meta name="description" content="Merged portfolio — light blue default, violet-cyan dark toggle, experience & contact." />
+  <style>
+    /* ---------------------------
+       THEME: Light (default, index5) vs Dark (index4)
+       Light = light blue palette from index5
+       Dark  = violet-cyan palette from index4
+       --------------------------- */
+    :root {
+      --bg: #e9f4ff;
+      --card: #ffffff;
+      --muted: #334155;
+      --accent: #0284c7;   /* primary accent (light) */
+      --accent2: #38bdf8;  /* secondary accent (light) */
+      --glass: rgba(0,0,0,0.05);
+      --text-on-accent: #ffffff;
+    }
+
+    [data-theme='dark'] {
+      --bg: #131a2b;
+      --card: #19233a;
+      --muted: #c9d5e7;
+      --accent: #9b5cf6;   /* violet (dark) */
+      --accent2: #22d3ee;  /* cyan (dark) */
+      --glass: rgba(255,255,255,0.08);
+      --text-on-accent: #ffffff;
+    }
+
+    /* ---------------------------
+       Base
+       --------------------------- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; -webkit-font-smoothing: antialiased; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--muted);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(56,189,248,0.18), transparent 35%),
+        radial-gradient(circle at 85% 85%, rgba(2,132,199,0.12), transparent 35%),
+        linear-gradient(180deg, var(--bg), #dbeafe);
+      transition: background .4s, color .4s;
+      padding-bottom: 40px;
+    }
+
+    .wrap { max-width: 1100px; margin: 24px auto; padding: 18px; }
+
+    header { display:flex; align-items:center; gap:16px; }
+    .logo { display:flex; align-items:center; gap:12px; }
+    .logo .avatar {
+      width:64px; height:64px; border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:grid; place-items:center; font-size:28px; font-weight:700; color:var(--text-on-accent);
+      cursor:pointer; transition: transform .25s ease;
+    }
+    .logo .avatar:hover { transform: rotate(-6deg) scale(1.05); }
+    .logo h1 { margin:0; font-size:20px; color:var(--accent); }
+    .hint { font-size:13px; color:var(--muted); }
+
+    nav { margin-left:auto; display:flex; gap:10px; align-items:center; }
+    nav a {
+      color: var(--muted); text-decoration: none;
+      padding: 8px 12px; border-radius:8px;
+    }
+    nav a:hover { background: var(--glass); color: var(--accent); }
+    nav a.active { background: var(--accent2); color: white; font-weight:600; }
+
+    .theme-toggle {
+      border-radius:999px; padding:6px 10px; border:none;
+      background: var(--accent2); color: white; font-weight:700; cursor:pointer;
+      transition: transform .25s ease;
+    }
+    .theme-toggle:hover { transform: rotate(12deg) scale(1.05); }
+
+    /* Avatar reveal */
+    .avatar-reveal { display:flex; justify-content:center; margin-top:28px; position:relative; height:260px; }
+    .avatar-circle {
+      width:220px; height:220px; border-radius:50%; overflow:hidden;
+      border:5px solid var(--accent2);
+      clip-path: circle(0% at 50% 50%);
+      transition: clip-path 1.2s ease-in-out;
+      box-shadow: 0 6px 30px rgba(2,6,23,0.06);
+    }
+    .avatar-circle.open { clip-path: circle(75% at 50% 50%); }
+    .avatar-circle img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    main { margin-top:20px; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--glass);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+      backdrop-filter: blur(6px);
+    }
+
+    .intro h2 { font-size:28px; margin-bottom:8px; color:var(--accent); }
+    .typing { color:var(--accent2); font-weight:700; margin-bottom:8px; }
+    .skills { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .skill {
+      background: var(--glass);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      color: var(--muted);
+    }
+
+    .btn {
+      display:inline-block; padding:8px 12px; border-radius:8px; text-decoration:none;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: white; font-weight:600; transition: opacity .2s;
+    }
+    .btn:hover { opacity:0.92; }
+
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:14px; margin-top:14px; }
+    .project {
+      padding:14px; border-radius:10px; min-height:120px;
+      display:flex; flex-direction:column; gap:10px; justify-content:space-between;
+      border:1px solid var(--glass); background:var(--card);
+      transition: transform .18s ease;
+    }
+    .project:hover { transform: translateY(-6px); }
+
+    footer { margin-top:40px; font-size:14px; color:var(--muted); text-align:center; }
+
+    /* modal */
+    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background: rgba(0,0,0,0.4); z-index:40; padding:18px; }
+    .modal.open { display:flex; }
+    .modal .win {
+      background: var(--card); padding:18px; border-radius:12px; width:100%; max-width:820px;
+      box-shadow: 0 12px 40px rgba(2,6,23,0.6);
+    }
+    .close { margin-left:auto; cursor:pointer; color:var(--muted); font-weight:700; }
+
+    /* confetti */
+    .confetti { position:fixed; pointer-events:none; inset:0; overflow:hidden; z-index:30; }
+
+    /* ---------------------------
+       Experience (from index8)
+       --------------------------- */
+    .exp-tabs { display:flex; gap:32px; justify-content:center; margin:18px 0; }
+    .exp-tab {
+      width:140px; height:140px; border-radius:50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display:flex; align-items:center; justify-content:center; font-weight:600; color: #fff; cursor:pointer;
+      transition: transform .25s ease;
+    }
+    .exp-tab.active { transform: scale(1.08); box-shadow: 0 8px 28px rgba(2,6,23,0.12); }
+    .exp-list { display:none; flex-direction:column; gap:10px; margin-top:12px; }
+    .exp-list.active { display:flex; }
+    .exp-item {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+      padding:12px 14px; border-radius:10px; cursor:pointer; border:1px solid rgba(255,255,255,0.04);
+      transition: background .15s ease;
+    }
+    .exp-item:hover { background: rgba(255,255,255,0.04); }
+
+    /* About + Contact layout improvements */
+    .about-grid { display:grid; gap:14px; grid-template-columns: 1fr; }
+    /* contact form styles with icons */
+    .contact-form { display:flex; flex-direction:column; gap:12px; max-width:720px; }
+    .row { display:flex; gap:12px; }
+    .field {
+      position:relative; flex:1;
+    }
+    .field input,
+    .field textarea {
+      width:100%;
+      padding:12px 12px 12px 40px;
+      border-radius:10px;
+      border:1px solid var(--glass);
+      background: transparent;
+      color: var(--muted);
+      font-size:14px;
+      outline:none;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    .field textarea { min-height:120px; resize:vertical; padding-top:12px; padding-bottom:12px; }
+    .field .icon {
+      position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none; font-size:16px;
+      opacity:0.95;
+    }
+    .field input:focus, .field textarea:focus { box-shadow: 0 6px 18px rgba(2,6,23,0.06); border-color: var(--accent2); }
+    .contact-actions { display:flex; justify-content:flex-start; }
+    .contact-small-hint { font-size:13px; color:var(--muted); margin-top:6px; }
+
+    /* Responsive tweaks */
+    @media (max-width: 880px) {
+      .avatar-reveal { height:220px; }
+      .exp-tabs { gap:16px; }
+      .exp-tab { width:120px; height:120px; }
+      .row { flex-direction: column; }
+      .field { width:100%; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="avatar" id="miniAvatar" title="Hover me">ML</div>
+        <div>
+          <h1>Mrunmayee Limaye</h1>
+          <div class="hint">Developer • Research Intern @ IIT Roorkee • Robotics Enthusiast</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#home" data-link>Home</a>
+        <a href="#projects" data-link>Projects</a>
+        <a href="#experience" data-link>Experience</a>
+        <a href="#about" data-link>About</a>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">🌙</button>
+      </nav>
+    </header>
+
+    <!-- circular avatar reveal -->
+    <div class="avatar-reveal">
+      <div class="avatar-circle" id="mainAvatar">
+        <img src="https://ivlabs.in/wp-content/uploads/2025/06/image-15.png" alt="Profile photo placeholder" />
+      </div>
+    </div>
+
+    <main>
+      <!-- HOME -->
+      <section id="home" class="page">
+        <div class="intro card">
+          <h2>Hello! I'm Mrunmayee 👋</h2>
+          <div class="typing" id="typing">a creative developer...</div>
+          <p class="hint">Final-year CSE student at VNIT Nagpur passionate about AI, robotics, and intelligent systems.</p>
+
+          <div class="skills" aria-hidden="true">
+            <div class="skill">HTML</div>
+            <div class="skill">CSS</div>
+            <div class="skill">JavaScript</div>
+            <div class="skill">Python</div>
+            <div class="skill">React</div>
+          </div>
+
+          <p style="margin-top:12px">Experience: <strong>IIT Roorkee • IvLabs VNIT</strong> | Education: <em>VNIT Nagpur - B.Tech CSE (8.56 CGPA)</em></p>
+
+          <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+            <a class="btn" href="#projects">View Projects</a>
+            <a class="btn" style="background:transparent; color:var(--accent); border:1px solid var(--accent2);" href="https://drive.google.com/uc?export=download&id=1IY_a-UdYrPbRtPyFMtoXWHsyGHM-L6RH
+">Download CV</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="page" style="display:none;">
+        <div class="card">
+          <h3>Projects</h3>
+          <p class="hint">Click a project to see details.</p>
+
+          <div class="grid" id="projectsGrid">
+            <div class="project" data-id="p1">
+              <div>
+                <h4>Expense Tracking System</h4>
+                <p class="hint">C-based finance tracker with custom file structures.</p>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <a class="btn" href="https://github.com/MrunmayeeL/Expense_Tracking_System" style="background:transparent; border:1px solid var(--glass); color:var(--accent);">Source</a>
+              </div>
+            </div>
+
+            <div class="project" data-id="p2">
+              <div>
+                <h4>Northwind Sales Analysis</h4>
+                <p class="hint">PostgreSQL + Python + pandas analytics project.</p>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <a class="btn" href="https://github.com/MrunmayeeL/Northwind-Sales-Analysis" style="background:transparent; border:1px solid var(--glass); color:var(--accent);">Source</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERIENCE (integrated from index8) -->
+      <section id="experience" class="page" style="display:none;">
+        <div class="card">
+          <h3>Experience</h3>
+          <div class="exp-tabs">
+            <div class="exp-tab active" id="proTab">Professional</div>
+            <div class="exp-tab" id="perTab">Personal</div>
+          </div>
+          <div class="exp-list active" id="proList">
+            <div class="exp-item" data-exp="pro1">Research Intern — IIT Roorkee</div>
+            <div class="exp-item" data-exp="pro2">Summer Intern — IvLabs, VNIT</div>
+          </div>
+          <div class="exp-list" id="perList">
+            <div class="exp-item" data-exp="per1">Student Mentor — VNIT SMP</div>
+            <div class="exp-item" data-exp="per2">Class Representative — CSE Dept</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT + CONTACT (about content from index.html + neat contact form) -->
+      <section id="about" class="page" style="display:none;">
+        <div class="card about-grid">
+          <h3>About & Experience</h3>
+
+          <p>I'm <strong>Mrunmayee Limaye</strong>, a B.Tech CSE student at VNIT Nagpur (CGPA 8.56).  
+          I've interned at IIT Roorkee, working on reinforcement learning for drone control, and at IvLabs where I built a gesture-controlled robot.</p>
+
+
+          <ul>
+            <li><strong>Education:</strong> VNIT Nagpur — B.Tech (2027)</li>
+            <li><strong>Skills:</strong> C, C++, Python, PyTorch, GitHub, Linux</li>
+            <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/mrunmayee-limaye-49a28628a" target="_blank">LinkedIn</a></li>
+            <li><strong>GitHub:</strong> <a href="https://github.com/MrunmayeeL" target="_blank">github</a></li>
+            <li><strong>Email:</strong> <a href="mailto:mrunmayee.m.limaye@gmail.com">mrunmayee.m.limaye@gmail.com</a></li>
+          </ul>
+        </div>
+
+          <h4>Contact</h4>
+
+          <form class="contact-form" id="contactForm" onsubmit="">
+            <div class="row">
+              <div class="field">
+                <span class="icon" aria-hidden="true">👤</span>
+                <input id="name" name="name" type="text" placeholder="Your name" required />
+              </div>
+              <div class="field">
+                <span class="icon" aria-hidden="true">✉️</span>
+                <input id="email" name="email" type="email" placeholder="Email" required />
+              </div>
+            </div>
+
+            <div class="field">
+              <span class="icon" aria-hidden="true">💬</span>
+              <textarea id="message" name="message" placeholder="Message" required></textarea>
+            </div>
+
+            <div class="contact-actions">
+              <button class="btn" type="submit">Send Message</button>
+            </div>
+          </form>
+
+          <div style="margin-top:12px;">
+            <strong>Quick contacts</strong>
+            <div style="margin-top:8px;" class="contact-icons">
+              <a href="mailto:example@email.com" title="Email" style="text-decoration:none; font-size:20px;">📧</a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" title="LinkedIn" style="text-decoration:none; font-size:20px;">💼</a>
+              <a href="https://github.com" target="_blank" rel="noreferrer" title="GitHub" style="text-decoration:none; font-size:20px;">🐙</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- shared modal -->
+      <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="win card" role="document">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <h3 id="modalTitle" style="margin:0; font-size:18px;">Project</h3>
+            <div class="close" id="modalClose" title="Close">✕</div>
+          </div>
+          <div id="modalBody" style="margin-top:10px; color:var(--muted);"></div>
+        </div>
+      </div>
+
+      <div class="confetti" id="confetti"></div>
+
+      <footer>© 2025 Mrunmayee Limaye • Interactive Portfolio</footer>
+    </main>
+  </div>
+
+  <script>
+    /* ---------------------------
+       Routing
+       --------------------------- */
+    const pages = [...document.querySelectorAll('.page')];
+    const links = [...document.querySelectorAll('[data-link]')];
+
+    function render() {
+      const hash = location.hash.replace('#','') || 'home';
+      pages.forEach(p => p.style.display = (p.id === hash) ? '' : 'none');
+      links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + hash));
+      if (hash === 'home') revealAvatar();
+    }
+
+    window.addEventListener('hashchange', render);
+    render();
+
+    /* ---------------------------
+       Avatar reveal
+       --------------------------- */
+    function revealAvatar() {
+      const avatar = document.getElementById('mainAvatar');
+      avatar.classList.remove('open');
+      void avatar.offsetWidth;
+      avatar.classList.add('open');
+    }
+
+    /* ---------------------------
+       Typing animation
+       --------------------------- */
+    const typingEl = document.getElementById('typing');
+    const phrases = ['a creative developer...', 'solving intriguing puzzles', 'robotics enthusiast', 'open-source enthusiast'];
+    let pi = 0, ci = 0;
+    (function type() {
+      const phrase = phrases[pi];
+      typingEl.textContent = phrase.slice(0, ++ci);
+      if (ci === phrase.length) {
+        setTimeout(() => { ci = 0; pi = (pi + 1) % phrases.length; type(); }, 1200);
+      } else setTimeout(type, 60);
+    })();
+
+    /* ---------------------------
+       Theme toggle (light blue default <-> violet-cyan dark)
+       Shows 🌙 in light mode, 🌞 in dark
+       --------------------------- */
+    const themeBtn = document.getElementById('themeToggle');
+    function setTheme(theme) {
+      document.body.setAttribute('data-theme', theme);
+      themeBtn.textContent = theme === 'dark' ? '🌞' : '🌙';
+    }
+    themeBtn.addEventListener('click', () => {
+      const cur = document.body.getAttribute('data-theme') || 'light';
+      setTheme(cur === 'dark' ? 'light' : 'dark');
+    });
+    // initialize button text based on initial attribute
+    setTheme(document.body.getAttribute('data-theme') || 'light');
+
+
+    /* ---------------------------
+       Confetti (lightweight)
+       --------------------------- */
+    function spawnConfetti(amount = 40) {
+      const container = document.getElementById('confetti');
+      for (let i = 0; i < amount; i++) {
+        const el = document.createElement('div');
+        el.textContent = ['🎉','✨','💫','🌟'][Math.floor(Math.random()*4)];
+        el.style.position = 'absolute';
+        el.style.left = (Math.random()*100) + '%';
+        el.style.top = (Math.random()*30) + '%';
+        el.style.fontSize = (8 + Math.random()*24) + 'px';
+        el.style.opacity = '0';
+        el.style.transition = 'transform 1200ms cubic-bezier(.2,.8,.2,1), opacity 1200ms';
+        container.appendChild(el);
+        requestAnimationFrame(() => {
+          el.style.opacity = '1';
+          el.style.transform = `translateY(${200 + Math.random()*300}px) rotate(${Math.random()*720-360}deg)`;
+        });
+        setTimeout(() => { el.style.opacity = '0'; }, 900);
+        setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
+      }
+    }
+
+    /* ---------------------------
+       Mini avatar interactions
+       --------------------------- */
+    const mini = document.getElementById('miniAvatar');
+    mini.addEventListener('mouseenter', () => mini.style.transform = 'rotate(-6deg) scale(1.05)');
+    mini.addEventListener('mouseleave', () => mini.style.transform = '');
+    mini.addEventListener('click', () => { spawnConfetti(30); alert('🎉 You found a secret spot!'); });
+
+    /* ---------------------------
+       Projects modal logic
+       --------------------------- */
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
+
+
+
+    modalClose.addEventListener('click', () => {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); } });
+
+
+    /* ---------------------------
+       Experience tab & modal integration (from index8)
+       --------------------------- */
+    const proTab = document.getElementById('proTab');
+    const perTab = document.getElementById('perTab');
+    const proList = document.getElementById('proList');
+    const perList = document.getElementById('perList');
+
+    function toggleTab(tab) {
+      if (tab === 'pro') {
+        proList.classList.add('active');
+        perList.classList.remove('active');
+        proTab.classList.add('active');
+        perTab.classList.remove('active');
+      } else {
+        perList.classList.add('active');
+        proList.classList.remove('active');
+        perTab.classList.add('active');
+        proTab.classList.remove('active');
+      }
+    }
+    proTab.addEventListener('click', () => toggleTab('pro'));
+    perTab.addEventListener('click', () => toggleTab('per'));
+    // keyboard accessibility for tabs
+    proTab.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') toggleTab('pro'); });
+    perTab.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') toggleTab('per'); });
+
+    const expData = {
+      pro1: {
+        title: 'Research Intern IIT Roorkee',
+        content: 'Worked on development of Dataset for training Reinforcement learning algorithms'
+      },
+      pro2: {
+        title: 'Summer Intern - IvLabs',
+        content: 'Worked on development of Gesture Controlled Omnidirection Bot'
+      },
+      per1: {
+        title: 'Student Mentor - VNIT Student Mentorship Program',
+        content: 'Mentoring 16 First Year Students in their academics as well as extra Curriculars'
+      },
+      per2: {
+        title: 'Class Representative',
+        content: 'Elected as Class representative for the freshman year.'
+      }
+    };
+
+    document.querySelectorAll('.exp-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const data = expData[item.dataset.exp];
+        if (!data) return;
+        modalTitle.textContent = data.title;
+        modalBody.textContent = data.content;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+      });
+    });
+
+    /* ---------------------------
+       Initialize avatar reveal after load
+       --------------------------- */
+    window.addEventListener('load', () => {
+      revealAvatar();
+      // set initial tab state
+      toggleTab('pro');
+    });
+
+    /* ---------------------------
+       Small accessibility: focus first nav link on load
+       --------------------------- */
+    window.addEventListener('load', () => document.querySelector('nav a')?.focus());
+  </script>
+</body>
+</html>
